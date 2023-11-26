@@ -1,4 +1,4 @@
-# Workspace using pnpm
+# Workspace using pnpm + Nx
 
 ### steps in building this workspace
 
@@ -60,3 +60,38 @@ You can run app using the following options,
 7) add `ui` refrence to `demo1` using `pnpm add ui -F demo1 --workspace` (it will create `ui` depedency in `demo1/package.json`). (also if you dont want the version of `ui` and then change, `^` to `*` in that worksace value)
 
 8) now you can import `ui` in `demo1`.
+
+9) adding `nx` to the existing monorepo using `pnpm add nx -D -w`.
+
+##### Running tasks with Nx
+`npx nx <target> <project>`
+  - npx nx build ui
+  - npx nx dev demo1
+
+10) create `nx.json`
+
+```json
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test"]
+      }
+    }
+  },
+  "namedInputs": {
+    "noMarkdown": ["!{projectRoot}/**/*.md"]
+  },
+  "targetDefaults": {
+    "dev": {
+      "dependsOn": ["^build"]
+    },
+    "build": {
+      "inputs": ["noMarkdown", "^noMarkdown"],
+      "dependsOn": ["^build"]
+    }
+  }
+}
+```
+11) To view grapgh, use `npx nx graph`
